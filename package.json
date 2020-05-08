@@ -1,0 +1,22 @@
+{
+  "name": "thursday",
+  "version": "1.0.0",
+  "description": "Draw dogs on Thursdays",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deidaraxc4/thursday.git"
+  },
+  "author": "Nick Tang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deidaraxc4/thursday/issues"
+  },
+  "homepage": "https://github.com/deidaraxc4/thursday#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
