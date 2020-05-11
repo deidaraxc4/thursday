@@ -7,7 +7,75 @@
     <!-- <meta property="og:url" content="https://example.com/"> -->
     <!-- <meta property="og:image" content="http://ia.media-imdb.com/images/rock.jpg" /> -->
     <title>Draw Dog Thursday - Login</title>
+    <!-- add our CSS -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/login.css" />
+    <!-- add JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 </head>
-<h1>login</h1>
+
+<body>
+
+    <div id="loginBox">
+        <!-- logo here -->
+        <h1>Thursday</h1>
+
+        <div id="loginToggle">
+            <a id="loginTab">Log In</a>
+            <a id="signUpTab">Sign Up</a>
+        </div>
+
+        <form id="loginForm" class="hidden">
+            <input type="text" placeholder="Username" name="username">
+            <input type="password" placeholder="Password" name="password">
+
+            <input type="submit" value="Log In">
+        </form>
+
+        <form id="signupForm" class="hidden">
+            <input type="email" placeholder="Email" name="email">
+            <input type="text" placeholder="Username" name="username">
+            <input type="password" placeholder="Password" name="password">
+            <input type="password" placeholder="Confirm Password" name="passwordConfirm">
+
+            <input type="submit" value="Sign Up">
+        </form>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const $ = (id) => document.getElementById(id);
+            $("loginForm").classList.toggle("hidden");
+            $("loginTab").classList.toggle("active");
+
+            $("loginTab").onclick = (e) => {
+                $("loginTab").classList.add("active");
+                $("signUpTab").classList.remove("active");
+            };
+
+            $("signUpTab").onclick = (e) => {
+                $("loginTab").classList.remove("active");
+                $("signUpTab").classList.add("active");
+            };
+        });
+
+        $("#signUpTab").click(function(){
+			$("#loginForm").fadeOut(350);
+			$("#loginBox").delay(100).animate({
+				height: "+=100"
+			}, 500);
+			$("#signupForm").delay(350).fadeIn(350);
+        });
+        
+        $("#loginTab").click(function(){
+			$("#signupForm").fadeOut(350);
+			$("#loginBox").delay(100).animate({
+				height: "-=100"
+			}, 500);
+			$("#loginForm").delay(350).fadeIn(350);
+		});
+    </script>
+
+</body>
 
 </html>
