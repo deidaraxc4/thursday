@@ -5,6 +5,12 @@ body {
     justify-content: center;
 }
 
+.logo {
+    height: auto;
+    width: 100px;
+    margin-top: 40px;
+}
+
 #loginBox {
     background-color: white;
     display: block;
