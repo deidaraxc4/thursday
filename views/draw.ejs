@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Draw dogs on Thursdays">
+    <meta property="og:type" content="website" />
+    <title>Draw Dog Thursday</title>
+    <!-- add our CSS -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/draw.css" />
+    <!-- add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- add JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav">
+            <a id="submit">Submit</a>
+            <a id="back">Back Home</a>
+        </div>
+    </div>
+
+    <br class="break" />
+
+    <div class="main">
+        <div class="canvas-wrapper">
+            <canvas id="canvas"></canvas>
+        </div>
+        <br />
+        <div class="toolbar">
+            <img id="pencil" src="assets/pencil.svg" alt="pencil">
+            <img id="eraser" src="assets/eraser.svg" alt="eraser">
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+    <script type="text/javascript">
+        var canvas;
+        var width = $(document).width();
+        var height = $(document).height();
+        console.log(width, height)
+
+        $(document).ready(
+            (function() {
+                var $ = (id) => document.getElementById(id);
+
+                canvas = new fabric.Canvas('canvas', {
+                    isDrawingMode: true,
+                    width: 512,
+                    height: 512,
+                    backgroundColor: "white",
+                    imageSmoothingEnabled: false
+                })
+            })()
+        );
+
+    </script>
+
+</body>
+
+</html>
