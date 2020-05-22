@@ -5,10 +5,6 @@ body {
     justify-content: center;
 }
 
-* {
-    font-family: 'Open Sans', sans-serif;
-}
-
 .logo {
     height: auto;
     width: 100px;
