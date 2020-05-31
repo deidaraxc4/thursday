@@ -18,3 +18,18 @@
     font-size: 1em;
     font-weight: bold;
 }
+
+#submit {
+    display: block;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 25px;
+    width: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 1em;
+    margin-top: 5px;
+    margin: auto;
+    background: #459ed1;
+    text-decoration: none;
+}

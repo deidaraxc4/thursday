@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Draw dogs on Thursdays">
+    <meta property="og:type" content="website" />
+    <title>Draw Dog Thursday</title>
+    <!-- add our CSS -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/home.css" />
+    <!-- add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- add JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav">
+            <div class="countdown">
+                <h1 id="title">Next Thursday</h1>
+                <h2 id="timer"></h2>
+                <a id="submit" href="/draw">Draw a dog</a>
+            </div>
+            <div class="logout">
+                <a id="logoutLink" href="/logout">Log Out</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main">
+
+    </div>
+
+    <script type="text/javascript">
+        const getNextThursdayDate = () => {
+            const d = new Date();
+            d.setDate(d.getDate() + (4 + 7 - d.getDay()) % 7);
+            d.setHours(0);
+            d.setMinutes(0);
+            d.setSeconds(0);
+            return d;
+        };
+        const nextThursday = getNextThursdayDate();
+
+        const displayCurrentTimeUntilThursday = () => {
+            $("#title").text("Next Thursday");
+
+            const now = new Date().getTime();
+            const distance = nextThursday - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
+            if(distance > 0) {
+                $("#title").text("It's Thursday!");
+                $("#timer").hide();
+                $("#submit").show();
+            }
+        };
+
+        $("#submit").hide();
+        // update time display every second
+        setInterval(displayCurrentTimeUntilThursday, 1000);
+    </script>
+
+</body>
+
+</html>
