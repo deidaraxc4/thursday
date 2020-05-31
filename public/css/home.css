@@ -1,0 +1,20 @@
+.countdown {
+    margin: auto;
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.logout {
+    float: left;
+    font-weight: 400;
+    font-size: 1em;
+    margin-top: 3vh;
+    margin-right: 1vw;
+}
+
+#logoutLink {
+    color: black;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: bold;
+}
