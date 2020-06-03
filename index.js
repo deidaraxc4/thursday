@@ -33,15 +33,11 @@ app.use(session(sessionConfig));
 app.use(bodyParser.urlencoded({ extended: false })) // parse Content-Type: x-www-form-urlencoded
 
 
-// pool.query('SELECT * FROM USERS', (err, res) =>{
-//     console.log(err,res)
-//     pool.end()  
-// })
-
 // configure where express reads CSS and JS files
 app.use(express.static(path.join(__dirname, 'public')));
 // configure view engine
 app.set('view engine', 'ejs')
+
 
 // routes
 app.get(['/', '/login'], function (req, res) {
@@ -59,6 +55,7 @@ app.get('/draw', function(req, res) {
 app.get('/home', function(req, res) {
     res.render('home');
 });
+
 
 // endpoints
 app.post('/signup', function(req, res) {
@@ -97,9 +94,11 @@ app.post('/login', function(req, res) {
     res.redirect('/login');
 })
 
+
 // redirect all other routes to login
 app.use(function(req, res) {
     res.redirect('/login');
 });
+
 
 app.listen(port, () => console.log(`listening on port ${port}`));
