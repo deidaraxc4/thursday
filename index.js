@@ -79,7 +79,9 @@ app.post('/signup', function(req, res) {
         pool.query(query, function(err, res) {
             if(err) {
                 console.log(err);
+                throw err;
             } else {
+                console.log("user created")
                 console.log(res.rows[0])
             }
         });
@@ -91,8 +93,40 @@ app.post('/signup', function(req, res) {
 
 app.post('/login', function(req, res) {
     console.log(req.body)
-    res.redirect('/login');
-})
+    if(req.body.username && req.body.password) {
+        const query = {
+            text: 'SELECT * FROM users WHERE users.username = $1',
+            values: [req.body.username]
+        };
+        pool.query(query, function(err, result) {
+            if(err) {
+                console.log(err);
+                throw err;
+            } else {
+                //console.log(result.rows[0])
+                if(result.rows.length < 1) {
+                    req.session.auth = "invalid";
+                    res.redirect('/login'); //TODO use render and pass msg as data no user found
+                } else {
+                    bcrypt.compare(req.body.password, result.rows[0].user_password, function(err, match) {
+                        if(match) {
+                            req.session.user = result.rows[0];
+                            req.session.auth = "authorized";
+                            res.redirect('/home');
+                        } else {
+                            req.session.auth = "invalid";
+                            res.redirect('/login'); //TODO use render and pass msg as data incorrect password
+                        }
+                    });
+                }
+            }
+        });
+
+    } else {
+        res.send("Please enter a username and password")
+    }
+
+});
 
 
 // redirect all other routes to login
