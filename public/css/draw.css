@@ -12,6 +12,10 @@
     background: #459ed1;
 }
 
+#submit:hover {
+    cursor: pointer;
+}
+
 #back {
     float: left;
     margin-left: 1vw;
@@ -58,4 +62,20 @@
     align-items: center;
     flex-wrap: wrap;
     flex: 1;
+}
+
+#pencil {
+    width: 100px;
+}
+
+#pencil:hover {
+    cursor: pointer;
+}
+
+#eraser {
+    width: 100px;
+}
+
+#eraser:hover {
+    cursor: pointer;
 }
