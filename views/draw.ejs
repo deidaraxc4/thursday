@@ -41,6 +41,13 @@
         var width = $(document).width();
         var height = $(document).height();
         console.log(width, height)
+        // bootleg mobile responsiveness
+        if(width <= 479) {
+            height = 512;
+        } else {
+            width = 512;
+            height = 512;
+        }
 
         $(document).ready(
             (function() {
@@ -48,15 +55,35 @@
 
                 canvas = new fabric.Canvas('canvas', {
                     isDrawingMode: true,
-                    width: 512,
-                    height: 512,
+                    width: width,
+                    height: height,
                     backgroundColor: "white",
                     imageSmoothingEnabled: false
                 });
                 canvas.freeDrawingBrush.width = 6;
 
+                $("submit").onclick = () => {
+                    console.log("click");
+                    const imageDataUrl = canvas.toDataURL();
+                    console.log(imageDataUrl);
+                };
+
             })()
         );
+
+        $("#eraser").css("opacity",".2");
+        $("#eraser").click(() => {
+            $("#eraser").css("opacity", "1");
+            $("#pencil").css("opacity", ".2");
+            canvas.freeDrawingBrush.color = "white"
+            canvas.freeDrawingBrush.width = 20;
+        });
+        $("#pencil").click(() => {
+            $("#pencil").css("opacity", "1");
+            $("#eraser").css("opacity", ".2");
+            canvas.freeDrawingBrush.color = "black"
+            canvas.freeDrawingBrush.width = 6;
+        });
 
     </script>
 
