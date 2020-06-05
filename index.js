@@ -38,6 +38,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 // configure view engine
 app.set('view engine', 'ejs')
 
+// middleware functions
+const requireAuth = function(req, res, next) {
+    if(req.session && req.session.auth === "authorized") {
+        res.locals.user = req.session.user;
+        next();
+    } else {
+        res.status(401).send("401 unauthorized");
+    }
+}
+
 
 // routes
 app.get(['/', '/login'], function (req, res) {
@@ -48,11 +58,15 @@ app.get('/logout', function(req, res) {
     res.redirect('/login');
 });
 
-app.get('/draw', function(req, res) {
+app.get('/draw', requireAuth, function(req, res) {
+    console.log(req.session);
+    console.log(res.locals);
     res.render('draw');
 });
 
-app.get('/home', function(req, res) {
+app.get('/home', requireAuth, function(req, res) {
+    console.log(req.session);
+    console.log(res.locals);
     res.render('home');
 });
 
