@@ -51,22 +51,19 @@ const requireAuth = function(req, res, next) {
 
 // routes
 app.get(['/', '/login'], function (req, res) {
+    // console.log(req.session)
     res.render('login');
-});
-
-app.get('/logout', function(req, res) {
-    res.redirect('/login');
 });
 
 app.get('/draw', requireAuth, function(req, res) {
     console.log(req.session);
-    console.log(res.locals);
+    // console.log(res.locals);
     res.render('draw');
 });
 
 app.get('/home', requireAuth, function(req, res) {
     console.log(req.session);
-    console.log(res.locals);
+    // console.log(res.locals);
     res.render('home');
 });
 
@@ -106,7 +103,6 @@ app.post('/signup', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-    console.log(req.body)
     if(req.body.username && req.body.password) {
         const query = {
             text: 'SELECT * FROM users WHERE users.username = $1',
@@ -140,6 +136,11 @@ app.post('/login', function(req, res) {
         res.send("Please enter a username and password")
     }
 
+});
+
+app.get('/logout', requireAuth, function(req, res) {
+    req.session.destroy();
+    res.redirect('/login');
 });
 
 
