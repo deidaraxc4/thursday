@@ -66,6 +66,14 @@
                     console.log("click");
                     const imageDataUrl = canvas.toDataURL();
                     console.log(imageDataUrl);
+                    const data = { data: imageDataUrl }
+                    window.fetch('/draw', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    }).then(() => window.location.href = '/home');
                 };
 
             })()
