@@ -1,12 +1,12 @@
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
-const path = require('path')
+const path = require('path');
 
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 
-const config = require('./config')()
+const config = require('./config')();
 const { Pool } = require('pg');
 const pool = new Pool({
     user: config.user,
@@ -30,13 +30,14 @@ const sessionConfig = {
 
 // configure various middleware
 app.use(session(sessionConfig));
-app.use(bodyParser.urlencoded({ extended: false })) // parse Content-Type: x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false })); // parse Content-Type: x-www-form-urlencoded
+app.use(bodyParser.json());
 
 
 // configure where express reads CSS and JS files
 app.use(express.static(path.join(__dirname, 'public')));
 // configure view engine
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 // middleware functions
 const requireAuth = function(req, res, next) {
@@ -46,7 +47,7 @@ const requireAuth = function(req, res, next) {
     } else {
         res.status(401).send("401 unauthorized");
     }
-}
+};
 
 
 // routes
@@ -56,8 +57,8 @@ app.get(['/', '/login'], function (req, res) {
 });
 
 app.get('/draw', requireAuth, function(req, res) {
-    console.log(req.session);
-    // console.log(res.locals);
+    //console.log(req.session);
+    console.log(res.locals);
     res.render('draw');
 });
 
@@ -141,6 +142,28 @@ app.post('/login', function(req, res) {
 app.get('/logout', requireAuth, function(req, res) {
     req.session.destroy();
     res.redirect('/login');
+});
+
+app.post('/draw', requireAuth, function(req, res) {
+    if(!req.body) {
+        res.send("No data sent");
+        return;
+    }
+
+    const query = {
+        text: 'INSERT INTO post(user_id, post_data) VALUES($1, $2)',
+        values: [res.locals.user.user_id, req.body['data']]
+    }
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("post created");
+            res.redirect('/home');
+        }
+    });
+
 });
 
 
