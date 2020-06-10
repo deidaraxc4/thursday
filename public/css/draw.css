@@ -31,12 +31,6 @@
     cursor: pointer;
 }
 
-.break {
-    display: block;
-    margin-top: 100px;
-    content: " ";
-}
-
 .main {
     display: flex;
     justify-content: center;
