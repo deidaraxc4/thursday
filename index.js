@@ -153,7 +153,7 @@ app.post('/draw', requireAuth, function(req, res) {
     const query = {
         text: 'INSERT INTO post(user_id, post_data) VALUES($1, $2)',
         values: [res.locals.user.user_id, req.body['data']]
-    }
+    };
     pool.query(query, function(err, response) {
         if(err) {
             console.log(err);
@@ -164,6 +164,31 @@ app.post('/draw', requireAuth, function(req, res) {
         }
     });
 
+});
+
+app.get('/submissions', requireAuth, function(req, res) {
+    const query = {
+        text: 'SELECT users.username, post.post_data, post.date FROM users INNER JOIN post ON post.user_id = users.user_id ORDER BY post.date DESC',
+        values: []
+    };
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            throw err;
+        } else {
+            const posts = response.rows;
+            const submissions = posts.map((post) => {
+                const buffer = Buffer.from(post.post_data);
+                return {
+                    username: post.username,
+                    dataUrl: buffer.toString('utf8'),
+                    timestamp: post.date
+                }
+            });
+
+            res.render('home', { submissions: submissions });
+        }
+    });
 });
 
 
