@@ -38,6 +38,14 @@
     display: flex;
     justify-content: center;
     vertical-align: middle;
+    flex-flow: row wrap;
+}
+
+.row {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
 }
 
 .card {
