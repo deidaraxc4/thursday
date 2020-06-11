@@ -10,6 +10,7 @@
     font-size: 1em;
     margin-top: 3vh;
     margin-right: 1vw;
+    position: absolute;
 }
 
 #logoutLink {
