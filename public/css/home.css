@@ -33,3 +33,86 @@
     background: #459ed1;
     text-decoration: none;
 }
+
+.main {
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+}
+
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    background-color: white;
+    float: left;
+    width: 33vw;
+    padding: 0 10px;
+}
+
+@media screen and (max-width: 600px) {
+    .card {
+        width: 100%;
+        display: block;
+        margin-bottom: 20px;
+    }
+}
+
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.info-container {
+    text-align: left;
+    box-sizing: border-box;
+    padding: 0px 20px;
+}
+
+.info {
+    height: 100px;
+    box-sizing:border-box;
+    padding-top: 10px;
+}
+
+.post-author {
+    font-weight: 600;
+    font-size: 1em;
+    margin: 0px;
+    float: left;
+}
+
+.timestamp {
+    font-weight: 400;
+    font-size: 1em;
+    margin:0px;
+    color: #d4d4d4;
+    float: right;
+}
+
+.icons {
+    padding-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.kebab-menu {
+    float: left;
+    height: 30px;
+    cursor: pointer;
+}
+
+.vote-container {
+    float: right;
+    display: flex;
+    justify-content: space-between;
+}
+
+.vote-counter {
+    font-weight: 600;
+    font-size: 1.5em;
+}
+
+.paw {
+    height: 30px;
+    cursor: pointer;
+}
