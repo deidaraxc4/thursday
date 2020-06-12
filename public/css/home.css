@@ -116,6 +116,10 @@ img {
     justify-content: space-between;
 }
 
+.not-voted {
+    opacity: .3;
+}
+
 .vote-counter {
     font-weight: 600;
     font-size: 1.5em;
