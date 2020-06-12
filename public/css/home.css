@@ -47,6 +47,15 @@
     display: flex;
     justify-content: center;
     vertical-align: middle;
+    margin-top: 30px;
+}
+
+.row:first-of-type {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    vertical-align: middle;
+    margin-top: 0px;
 }
 
 .card {
