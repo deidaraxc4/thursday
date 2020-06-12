@@ -5,6 +5,7 @@ const path = require('path');
 
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const moment = require('moment');
 
 const config = require('./config')();
 const { Pool } = require('pg');
@@ -58,12 +59,12 @@ app.get(['/', '/login'], function (req, res) {
 
 app.get('/draw', requireAuth, function(req, res) {
     //console.log(req.session);
-    console.log(res.locals);
+    //console.log(res.locals);
     res.render('draw');
 });
 
 app.get('/home', requireAuth, function(req, res) {
-    console.log(req.session);
+    //console.log(req.session);
     // console.log(res.locals);
     res.render('home');
 });
@@ -179,10 +180,12 @@ app.get('/submissions', requireAuth, function(req, res) {
             const posts = response.rows;
             const submissions = posts.map((post) => {
                 const buffer = Buffer.from(post.post_data);
+                // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
+                const dateFromNow = moment(post.date).fromNow();
                 return {
                     username: post.username,
                     dataUrl: buffer.toString('utf8'),
-                    timestamp: post.date
+                    timestamp: dateFromNow
                 }
             });
 
