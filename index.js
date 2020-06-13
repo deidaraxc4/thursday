@@ -58,14 +58,10 @@ app.get(['/', '/login'], function (req, res) {
 });
 
 app.get('/draw', requireAuth, function(req, res) {
-    //console.log(req.session);
-    //console.log(res.locals);
     res.render('draw');
 });
 
 app.get('/home', requireAuth, function(req, res) {
-    //console.log(req.session);
-    // console.log(res.locals);
     res.render('home');
 });
 
@@ -192,6 +188,27 @@ app.get('/submissions', requireAuth, function(req, res) {
             res.render('home', { submissions: submissions });
         }
     });
+});
+
+app.post('/vote', requireAuth, function(req, res) {
+    if(!req.body) {
+        res.send("No data sent");
+    }
+
+    const query = {
+        text: 'INSERT INTO vote(user_id, post_id) VALUES($1, $2)',
+        values: [res.locals.user.user_id, req.body['postId']]
+    };
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("vote created");
+            res.send('success');
+        }
+    });
+
 });
 
 
