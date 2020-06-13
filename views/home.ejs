@@ -54,11 +54,19 @@
                             <h2 class="timestamp"><%=submissions[i].timestamp%></h2>
                             <div class=icons>
                                 <img class="kebab-menu" src="assets/kebab-menu.svg">
-                                <div class="vote-container not-voted">
-                                    <a class=vote-counter><%=submissions[i].num_votes%></a>
-                                    <a>&nbsp;</a>
-                                    <img class="paw" src="assets/paw.svg" data-postId="<%=submissions[i].postId%>">
-                                </div>
+                                <% if (submissions[i].user_voted) { %>
+                                    <div class="vote-container">
+                                        <a class=vote-counter><%=submissions[i].num_votes%></a>
+                                        <a>&nbsp;</a>
+                                        <img class="paw" src="assets/paw.svg" data-postId="<%=submissions[i].postId%>">
+                                    </div>
+                                <% } else { %>
+                                    <div class="vote-container not-voted">
+                                        <a class=vote-counter><%=submissions[i].num_votes%></a>
+                                        <a>&nbsp;</a>
+                                        <img class="paw" src="assets/paw.svg" data-postId="<%=submissions[i].postId%>">
+                                    </div>
+                                <% } %>
                             </div>
                         </div>
                     </div>
