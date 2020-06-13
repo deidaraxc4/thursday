@@ -180,7 +180,18 @@ app.get('/submissions', requireAuth, function(req, res) {
             const submissions = posts.map((post) => {
                 const buffer = Buffer.from(post.post_data);
                 // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
-                const dateFromNow = moment(post.date).fromNow();
+                // console.log(post.date)
+                // const date = new Date(post.date);
+                // console.log(date)
+                // console.log(moment(date).local())
+                // const localDate = moment(date).local();
+                // const dateFromNow = localDate.fromNow();
+                const d = moment(post.date).subtract({ hours: 4 }); // server is keeping utc time so go back 4
+                //console.log(post.date)
+                //console.log(moment(post.date+'Z').toString())
+
+                //const dateFromNow = d.fromNow();
+                const dateFromNow = moment(post.date).local().fromNow();
                 return {
                     username: post.username,
                     dataUrl: buffer.toString('utf8'),
