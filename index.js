@@ -165,8 +165,11 @@ app.post('/draw', requireAuth, function(req, res) {
 
 app.get('/submissions', requireAuth, function(req, res) {
     const query = {
-        text: 'SELECT users.username, post.post_data, post.date FROM users INNER JOIN post ON post.user_id = users.user_id ORDER BY post.date DESC',
-        values: []
+        text: `SELECT u.username, p.post_data, p.date, p.post_id, 
+        (SELECT SUM(vote_value) FROM vote v WHERE v.post_id = p.post_id) num_votes,
+        (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
+        FROM users u INNER JOIN post p ON p.user_id = u.user_id ORDER BY p.date DESC`,
+        values: [res.locals.user.user_id]
     };
     pool.query(query, function(err, response) {
         if(err) {
@@ -181,7 +184,10 @@ app.get('/submissions', requireAuth, function(req, res) {
                 return {
                     username: post.username,
                     dataUrl: buffer.toString('utf8'),
-                    timestamp: dateFromNow
+                    timestamp: dateFromNow,
+                    postId: post.post_id,
+                    num_votes: post.num_votes,
+                    user_voted: post.user_voted
                 }
             });
 
