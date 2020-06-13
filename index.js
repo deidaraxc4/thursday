@@ -166,7 +166,7 @@ app.post('/draw', requireAuth, function(req, res) {
 app.get('/submissions', requireAuth, function(req, res) {
     const query = {
         text: `SELECT u.username, p.post_data, p.date, p.post_id, 
-        (SELECT SUM(vote_value) FROM vote v WHERE v.post_id = p.post_id) num_votes,
+        (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
         (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
         FROM users u INNER JOIN post p ON p.user_id = u.user_id ORDER BY p.date DESC`,
         values: [res.locals.user.user_id]
