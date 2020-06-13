@@ -13,3 +13,13 @@ CREATE TABLE IF NOT EXISTS post (
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
+
+CREATE TABLE IF NOT EXISTS vote (
+    user_id integer NOT NULL,
+    post_id integer NOT NULL,
+	vote_value integer DEFAULT 1,
+	FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+	FOREIGN KEY (post_id) REFERENCES post (post_id) ON DELETE CASCADE,
+	PRIMARY KEY (user_id, post_id)
+);
+
