@@ -109,6 +109,33 @@
         $("#submit").hide();
         // update time display every second
         setInterval(displayCurrentTimeUntilThursday, 1000);
+
+        // handle upvote
+        const paws = document.getElementsByClassName("paw");
+        Array.prototype.forEach.call(paws, function(element) {
+            element.addEventListener('click', function() {
+                //console.log("data-postId value is " + element.dataset.postid)
+                // check if voted if so don't do anything
+                if(element.parentElement.classList.contains("not-voted")) {
+                    console.log("vote")
+                    element.parentElement.classList.remove("not-voted");
+                    const currentVoteValue = parseInt(element.parentElement.firstElementChild.text);
+                    element.parentElement.firstElementChild.text = currentVoteValue + 1;
+                    // call endpoint
+                    const data = { postId: element.dataset.postid };
+                    window.fetch('/vote', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    // nothing to do
+                    console.log("you already voted")
+                }
+            })
+        });
     </script>
 
 </body>
