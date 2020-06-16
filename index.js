@@ -62,6 +62,8 @@ app.get('/draw', requireAuth, function(req, res) {
 
 app.get('/home', requireAuth, function(req, res) {
     const sort = req.query.sort;
+    const page = req.query.page || 1;
+    const offset = (page - 1) * 5;
     let orderQuery = "ORDER BY p.date DESC";
     switch (sort) {
         case "new" :
@@ -84,8 +86,8 @@ app.get('/home', requireAuth, function(req, res) {
         text: `SELECT u.username, p.post_data, p.date, p.post_id, 
         (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
         (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
-        FROM users u INNER JOIN post p ON p.user_id = u.user_id ${orderQuery}`,
-        values: [res.locals.user.user_id]
+        FROM users u INNER JOIN post p ON p.user_id = u.user_id ${orderQuery} LIMIT 5 OFFSET $2`,
+        values: [res.locals.user.user_id, offset]
     };
     pool.query(query, function(err, response) {
         if(err) {
