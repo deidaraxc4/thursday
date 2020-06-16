@@ -114,10 +114,8 @@
         const paws = document.getElementsByClassName("paw");
         Array.prototype.forEach.call(paws, function(element) {
             element.addEventListener('click', function() {
-                //console.log("data-postId value is " + element.dataset.postid)
                 // check if voted if so don't do anything
                 if(element.parentElement.classList.contains("not-voted")) {
-                    console.log("vote")
                     element.parentElement.classList.remove("not-voted");
                     const currentVoteValue = parseInt(element.parentElement.firstElementChild.text);
                     element.parentElement.firstElementChild.text = currentVoteValue + 1;
