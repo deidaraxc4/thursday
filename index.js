@@ -61,11 +61,30 @@ app.get('/draw', requireAuth, function(req, res) {
 });
 
 app.get('/home', requireAuth, function(req, res) {
+    const sort = req.query.sort;
+    let orderQuery = "ORDER BY p.date DESC";
+    switch (sort) {
+        case "new" :
+            orderQuery = "ORDER BY p.date DESC";
+            break;
+        case "old" :
+            orderQuery = "ORDER BY p.date ASC";
+            break;
+        case "best" :
+            orderQuery = "ORDER BY num_votes DESC";
+            break;
+        case "bad" :
+            orderQuery = "ORDER BY num_votes ASC";
+            break;
+        default:
+            orderQuery = "ORDER BY p.date DESC";
+    }
+
     const query = {
         text: `SELECT u.username, p.post_data, p.date, p.post_id, 
         (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
         (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
-        FROM users u INNER JOIN post p ON p.user_id = u.user_id ORDER BY p.date DESC`,
+        FROM users u INNER JOIN post p ON p.user_id = u.user_id ${orderQuery}`,
         values: [res.locals.user.user_id]
     };
     pool.query(query, function(err, response) {
