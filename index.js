@@ -53,7 +53,6 @@ const requireAuth = function(req, res, next) {
 
 // routes
 app.get(['/', '/login'], function (req, res) {
-    // console.log(req.session)
     res.render('login');
 });
 
@@ -62,7 +61,47 @@ app.get('/draw', requireAuth, function(req, res) {
 });
 
 app.get('/home', requireAuth, function(req, res) {
-    res.render('home');
+    const query = {
+        text: `SELECT u.username, p.post_data, p.date, p.post_id, 
+        (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
+        (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
+        FROM users u INNER JOIN post p ON p.user_id = u.user_id ORDER BY p.date DESC`,
+        values: [res.locals.user.user_id]
+    };
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            throw err;
+        } else {
+            const posts = response.rows;
+            const submissions = posts.map((post) => {
+                const buffer = Buffer.from(post.post_data);
+                // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
+                // console.log(post.date)
+                // const date = new Date(post.date);
+                // console.log(date)
+                // console.log(moment(date).local())
+                // const localDate = moment(date).local();
+                // const dateFromNow = localDate.fromNow();
+                const d = moment(post.date).subtract({ hours: 4 }); // server is keeping utc time so go back 4
+                //console.log(post.date)
+                //console.log(moment(post.date+'Z').toString())
+
+                //const dateFromNow = d.fromNow();
+                const dateFromNow = moment(post.date).local().fromNow();
+                return {
+                    username: post.username,
+                    dataUrl: buffer.toString('utf8'),
+                    timestamp: dateFromNow,
+                    postId: post.post_id,
+                    num_votes: post.num_votes,
+                    user_voted: post.user_voted
+                }
+            });
+
+            res.render('home', { submissions: submissions });
+        }
+    });
 });
 
 
@@ -161,50 +200,6 @@ app.post('/draw', requireAuth, function(req, res) {
         }
     });
 
-});
-
-app.get('/submissions', requireAuth, function(req, res) {
-    const query = {
-        text: `SELECT u.username, p.post_data, p.date, p.post_id, 
-        (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
-        (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
-        FROM users u INNER JOIN post p ON p.user_id = u.user_id ORDER BY p.date DESC`,
-        values: [res.locals.user.user_id]
-    };
-    pool.query(query, function(err, response) {
-        if(err) {
-            console.log(err);
-            throw err;
-        } else {
-            const posts = response.rows;
-            const submissions = posts.map((post) => {
-                const buffer = Buffer.from(post.post_data);
-                // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
-                // console.log(post.date)
-                // const date = new Date(post.date);
-                // console.log(date)
-                // console.log(moment(date).local())
-                // const localDate = moment(date).local();
-                // const dateFromNow = localDate.fromNow();
-                const d = moment(post.date).subtract({ hours: 4 }); // server is keeping utc time so go back 4
-                //console.log(post.date)
-                //console.log(moment(post.date+'Z').toString())
-
-                //const dateFromNow = d.fromNow();
-                const dateFromNow = moment(post.date).local().fromNow();
-                return {
-                    username: post.username,
-                    dataUrl: buffer.toString('utf8'),
-                    timestamp: dateFromNow,
-                    postId: post.post_id,
-                    num_votes: post.num_votes,
-                    user_voted: post.user_voted
-                }
-            });
-
-            res.render('home', { submissions: submissions });
-        }
-    });
 });
 
 app.post('/vote', requireAuth, function(req, res) {
