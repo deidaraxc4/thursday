@@ -85,7 +85,8 @@ app.get('/home', requireAuth, function(req, res) {
     const query = {
         text: `SELECT u.username, p.post_data, p.date, p.post_id, 
         (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
-        (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted) 
+        (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted),
+        COUNT(*) OVER() AS full_count
         FROM users u INNER JOIN post p ON p.user_id = u.user_id ${orderQuery} LIMIT 5 OFFSET $2`,
         values: [res.locals.user.user_id, offset]
     };
@@ -95,6 +96,7 @@ app.get('/home', requireAuth, function(req, res) {
             throw err;
         } else {
             const posts = response.rows;
+            const totalItems = response.rows[0].full_count;
             const submissions = posts.map((post) => {
                 const buffer = Buffer.from(post.post_data);
                 // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
@@ -120,7 +122,7 @@ app.get('/home', requireAuth, function(req, res) {
                 }
             });
 
-            res.render('home', { submissions: submissions });
+            res.render('home', { submissions: submissions, totalItems: totalItems });
         }
     });
 });
