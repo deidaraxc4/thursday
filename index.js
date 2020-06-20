@@ -53,6 +53,9 @@ const requireAuth = function(req, res, next) {
 
 // routes
 app.get(['/', '/login'], function (req, res) {
+    if(req.session.auth == "authorized") {
+        res.redirect('/home');
+    }
     res.render('login', { failed: false });
 });
 
@@ -208,8 +211,9 @@ app.post('/login', function(req, res) {
 });
 
 app.get('/logout', requireAuth, function(req, res) {
-    req.session.destroy();
-    res.redirect('/login');
+    req.session.destroy(function(err) {
+        res.redirect('/login');
+    });
 });
 
 app.post('/draw', requireAuth, function(req, res) {
