@@ -53,9 +53,6 @@ const requireAuth = function(req, res, next) {
 
 // routes
 app.get(['/', '/login'], function (req, res) {
-    if(req.session.auth == "authorized") {
-        res.redirect('/home');
-    }
     res.render('login', { failed: false });
 });
 
@@ -108,26 +105,13 @@ app.get('/home', requireAuth, function(req, res) {
             } catch(e) {
                 totalItems = 0
             }
-            //const totalItems = response.rows[0].full_count
             const submissions = posts.map((post) => {
                 const buffer = Buffer.from(post.post_data);
-                // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
-                // console.log(post.date)
-                // const date = new Date(post.date);
-                // console.log(date)
-                // console.log(moment(date).local())
-                // const localDate = moment(date).local();
-                // const dateFromNow = localDate.fromNow();
-                const d = moment(post.date).subtract({ hours: 4 }); // server is keeping utc time so go back 4
-                //console.log(post.date)
-                //console.log(moment(post.date+'Z').toString())
 
-                //const dateFromNow = d.fromNow();
-                const dateFromNow = moment(post.date).local().fromNow();
                 return {
                     username: post.username,
                     dataUrl: buffer.toString('utf8'),
-                    timestamp: dateFromNow,
+                    timestamp: post.date,
                     postId: post.post_id,
                     num_votes: post.num_votes,
                     user_voted: post.user_voted

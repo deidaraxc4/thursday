@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
     <!-- add JQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- add MomentJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
 </head>
 
 <body>
@@ -51,7 +53,10 @@
                         <hr>
                         <div class="info">
                             <h2 class="post-author"><%=submissions[i].username%>'s dog</h2>
-                            <h2 class="timestamp"><%=submissions[i].timestamp%></h2>
+                            <script>
+                                var x = "<%=submissions[i].timestamp%>"
+                                document.write('<h2 class="timestamp">'+moment(new Date(x+' UTC')).local().fromNow()+'</h2>')
+                            </script>
                             <div class=icons>
                                 <img class="kebab-menu" src="assets/kebab-menu.svg">
                                 <% if (submissions[i].user_voted) { %>
@@ -79,7 +84,7 @@
     <br />
 
     <div class="pagination">
-        <script>const currentPage = <%=currentPage%></script>
+        <script>const currentPage = <%=currentPage%>;</script>
         <% if(currentPage == 1) {%>
             <input disabled type="button" id="previous" onclick="previousPage()" value="prev" />
         <% } else { %>
