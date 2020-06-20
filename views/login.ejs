@@ -21,6 +21,9 @@
     <div id="loginBox">
         <img class="logo" src="thursday_logo.svg"/>
         <h1>Thursday</h1>
+        <% if (failed) { %>
+            <p style="color:red">Invalid username or password</p>
+        <% } %>
 
         <div id="loginToggle">
             <a id="loginTab">Log In</a>

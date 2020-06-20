@@ -53,7 +53,7 @@ const requireAuth = function(req, res, next) {
 
 // routes
 app.get(['/', '/login'], function (req, res) {
-    res.render('login');
+    res.render('login', { failed: false });
 });
 
 app.get('/draw', requireAuth, function(req, res) {
@@ -176,7 +176,7 @@ app.post('/login', function(req, res) {
                 //console.log(result.rows[0])
                 if(result.rows.length < 1) {
                     req.session.auth = "invalid";
-                    res.redirect('/login'); //TODO use render and pass msg as data no user found
+                    res.render('login', { failed: true });
                 } else {
                     bcrypt.compare(req.body.password, result.rows[0].user_password, function(err, match) {
                         if(match) {
@@ -185,7 +185,7 @@ app.post('/login', function(req, res) {
                             res.redirect('/home');
                         } else {
                             req.session.auth = "invalid";
-                            res.redirect('/login'); //TODO use render and pass msg as data incorrect password
+                            res.render('login', { failed: true });
                         }
                     });
                 }
