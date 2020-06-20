@@ -62,7 +62,10 @@ app.get('/draw', requireAuth, function(req, res) {
 
 app.get('/home', requireAuth, function(req, res) {
     const sort = req.query.sort;
-    const page = req.query.page || 1;
+    let page = parseInt(req.query.page) || 1;
+    if(page < 1) {
+        page = 1;
+    }
     const offset = (page - 1) * 5;
     let orderQuery = "ORDER BY p.date DESC";
     switch (sort) {
@@ -96,7 +99,13 @@ app.get('/home', requireAuth, function(req, res) {
             throw err;
         } else {
             const posts = response.rows;
-            const totalItems = response.rows[0].full_count;
+            let totalItems;
+            try {
+                totalItems = response.rows[0].full_count
+            } catch(e) {
+                totalItems = 0
+            }
+            //const totalItems = response.rows[0].full_count
             const submissions = posts.map((post) => {
                 const buffer = Buffer.from(post.post_data);
                 // figure out difference between post date and now and round to nearest minute, hour, day, month, or year
@@ -122,7 +131,7 @@ app.get('/home', requireAuth, function(req, res) {
                 }
             });
 
-            res.render('home', { submissions: submissions, totalItems: totalItems });
+            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page });
         }
     });
 });
