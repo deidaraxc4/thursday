@@ -58,7 +58,12 @@
                                 document.write('<h2 class="timestamp">'+moment(new Date(x+' UTC')).local().fromNow()+'</h2>')
                             </script>
                             <div class=icons>
-                                <img class="kebab-menu" src="assets/kebab-menu.svg">
+                                <div class="dropdown">
+                                    <img class="kebab-menu" src="assets/kebab-menu.svg">
+                                    <div class="dropdown-content">
+                                        <a>Report</a>
+                                    </div>
+                                </div>
                                 <% if (submissions[i].user_voted) { %>
                                     <div class="vote-container">
                                         <a class=vote-counter><%=submissions[i].num_votes%></a>
@@ -157,6 +162,27 @@
                 }
             })
         });
+
+        // handle kebab button click and clicking off
+        const kebabs = document.getElementsByClassName("kebab-menu");
+        Array.prototype.forEach.call(kebabs, function(element) {
+            element.addEventListener('click', function() {
+                element.nextElementSibling.classList.toggle("show");
+            })
+        });
+
+        window.onclick = function(event) {
+            if(!event.target.matches('.kebab-menu')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                let i;
+                for(i = 0; i < dropdowns.length; i++) {
+                    const opendropdown = dropdowns[i];
+                    if(opendropdown.classList.contains("show")) {
+                        opendropdown.classList.remove("show");
+                    }
+                }
+            }
+        }
     </script>
 
     <script>
