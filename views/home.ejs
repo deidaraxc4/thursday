@@ -14,6 +14,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <!-- add MomentJS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <!-- add sweet alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 </head>
 
 <body>
@@ -61,7 +63,7 @@
                                 <div class="dropdown">
                                     <img class="kebab-menu" src="assets/kebab-menu.svg">
                                     <div class="dropdown-content">
-                                        <a>Report</a>
+                                        <a class="report">Report</a>
                                     </div>
                                 </div>
                                 <% if (submissions[i].user_voted) { %>
@@ -160,6 +162,27 @@
                     // nothing to do
                     console.log("you already voted")
                 }
+            })
+        });
+
+        // handle report click
+        $(".report").click(() => {
+            Swal.fire({
+                title: 'Reason for reporting',
+                input: 'select',
+                inputOptions: {
+                    'A': 'Not a dog',
+                    'B': 'Offensive content',
+                    'C': 'Other'
+                },
+                inputPlaceholder: 'Select a reason',
+                showCancelButton: true,
+            }).then((result) => {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Report Received',
+                    text: 'Thanks for reporting!'
+                })
             })
         });
 
