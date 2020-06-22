@@ -50,6 +50,14 @@ const requireAuth = function(req, res, next) {
     }
 };
 
+const requireMod = function(req, res, next) {
+    if(req.session && req.session.auth === "authorized" && res.locals.user.moderator === true) {
+        next();
+    } else {
+        res.status(403).send("403 forbidden");
+    }
+};
+
 
 // routes
 app.get(['/', '/login'], function (req, res) {
@@ -241,6 +249,26 @@ app.post('/vote', requireAuth, function(req, res) {
         }
     });
 
+});
+
+app.delete('/post', requireMod, function(req, res) {
+    if(!req.body) {
+        res.send("No data sent");
+    }
+
+    const query = {
+        text: 'DELETE FROM post WHERE post_id = $1',
+        values: [req.body['postId']]
+    };
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            throw err;
+        } else {
+            console.log("post deleted");
+            res.send('success');
+        }
+    })
 });
 
 
