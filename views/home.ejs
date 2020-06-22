@@ -166,8 +166,8 @@
         });
 
         // handle report click
-        $(".report").click(() => {
-            Swal.fire({
+        $(".report").click(async () => {
+            const { value: reported } = await Swal.fire({
                 title: 'Reason for reporting',
                 input: 'select',
                 inputOptions: {
@@ -177,13 +177,24 @@
                 },
                 inputPlaceholder: 'Select a reason',
                 showCancelButton: true,
-            }).then((result) => {
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value === 'A', 'B', 'C') {
+                            resolve()
+                        } else {
+                            resolve('')
+                        }
+                    })
+                }
+            })
+
+            if(reported) {
                 Swal.fire({
                     icon: 'info',
                     title: 'Report Received',
                     text: 'Thanks for reporting!'
                 })
-            })
+            }
         });
 
         // handle kebab button click and clicking off
