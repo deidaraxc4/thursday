@@ -152,14 +152,14 @@ app.post('/signup', function(req, res) {
             text: 'INSERT INTO users(email, username, user_password, moderator) VALUES($1, $2, $3, $4)',
             values: [req.body.email, req.body.username, hash, false],
         };
-        pool.query(query, function(err, res) {
+        pool.query(query, function(err, response) {
             if(err) {
                 console.log(err);
                 // throw err;
                 res.status(400).send("something went wrong")
             } else {
                 console.log("user created")
-                console.log(res.rows[0])
+                console.log(response.rows[0])
             }
         });
 
