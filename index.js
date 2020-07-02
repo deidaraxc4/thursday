@@ -105,7 +105,7 @@ app.get('/home', requireAuth, function(req, res) {
         if(err) {
             console.log(err);
             //throw err;
-            res.status(400).send("something went wrong")
+            res.send("something went wrong")
         } else {
             const posts = response.rows;
             let totalItems;
@@ -156,7 +156,7 @@ app.post('/signup', function(req, res) {
             if(err) {
                 console.log(err);
                 // throw err;
-                res.status(400).send("something went wrong")
+                res.send("something went wrong")
             } else {
                 console.log("user created")
                 console.log(response.rows[0])
@@ -178,7 +178,7 @@ app.post('/login', function(req, res) {
             if(err) {
                 console.log(err);
                 // throw err;
-                res.status(400).send("something went wrong")
+                res.send("something went wrong")
             } else {
                 //console.log(result.rows[0])
                 if(result.rows.length < 1) {
@@ -225,7 +225,7 @@ app.post('/draw', requireAuth, function(req, res) {
         if(err) {
             console.log(err);
             // throw err;
-            res.status(400).send("something went wrong")
+            res.send("something went wrong")
         } else {
             console.log("post created");
             res.redirect('/home');
@@ -247,7 +247,7 @@ app.post('/vote', requireAuth, function(req, res) {
         if(err) {
             console.log(err);
             // throw err;
-            res.status(400).send("something went wrong")
+            res.send("something went wrong")
         } else {
             console.log("vote created");
             res.send('success');
@@ -269,7 +269,7 @@ app.delete('/post', requireMod, function(req, res) {
         if(err) {
             console.log(err);
             // throw err;
-            res.status(400).send("something went wrong")
+            res.send("something went wrong")
         } else {
             console.log("post deleted");
             res.send('success');
