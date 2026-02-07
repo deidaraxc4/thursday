@@ -67,13 +67,28 @@ const requireMod = function(req, res, next) {
     }
 };
 
+// Flag to override allow/disallow drawing (moderators can set this later)
+let drawingEnabled = false;
+
+// Middleware to check if it's Thursday or if drawing is explicitly enabled
+const checkThursday = function(req, res, next) {
+    const today = new Date().getDay();
+    const isThursday = today === 4; // Thursday is 4 (0=Sunday, 1=Monday, 2=Tuesday, etc.)
+    
+    if(isThursday || drawingEnabled) {
+        next();
+    } else {
+        res.status(403).send("Drawing is only available on Thursdays");
+    }
+};
+
 
 // routes
 app.get(['/', '/login'], function (req, res) {
     res.render('login', { failed: false });
 });
 
-app.get('/draw', requireAuth, function(req, res) {
+app.get('/draw', requireAuth, checkThursday, function(req, res) {
     res.render('draw');
 });
 
@@ -136,7 +151,7 @@ app.get('/home', requireAuth, function(req, res) {
                 }
             });
 
-            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page });
+            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page, user: res.locals.user });
         }
     });
 });
@@ -223,7 +238,7 @@ app.get('/logout', requireAuth, function(req, res) {
     });
 });
 
-app.post('/draw', requireAuth, function(req, res) {
+app.post('/draw', requireAuth, checkThursday, function(req, res) {
     if(!req.body) {
         res.send("No data sent");
         return;
