@@ -23,3 +23,9 @@ CREATE TABLE IF NOT EXISTS vote (
 	PRIMARY KEY (user_id, post_id)
 );
 
+CREATE TABLE IF NOT EXISTS session (
+	sid varchar NOT NULL COLLATE "default",
+	sess json NOT NULL,
+	expire timestamp(6) NOT NULL,
+	PRIMARY KEY (sid)
+);
