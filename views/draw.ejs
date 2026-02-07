@@ -35,6 +35,10 @@
         <div class="toolbar">
             <img id="pencil" src="assets/pencil.svg" alt="pencil">
             <img id="eraser" src="assets/eraser.svg" alt="eraser">
+            <span class="size-divider">|</span>
+            <span id="size-small" class="size-button" title="Small">●</span>
+            <span id="size-medium" class="size-button" title="Medium">●</span>
+            <span id="size-large" class="size-button" title="Large">●</span>
         </div>
     </div>
 
@@ -43,12 +47,34 @@
         var canvas;
         var width = $(document).width();
         var height = $(document).height();
+        var currentSize = "medium"; // track current size
+        
         // bootleg mobile responsiveness
         if(width <= 479) {
             height = 512;
         } else {
             width = 512;
             height = 512;
+        }
+
+        // Function to create a circle cursor based on brush width and color
+        function createCircleCursor(radius, color) {
+            const svg = `
+                <svg width="${radius * 2}" height="${radius * 2}" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="${radius}" cy="${radius}" r="${radius - 1}" fill="none" stroke="${color}" stroke-width="1"/>
+                    <circle cx="${radius}" cy="${radius}" r="1" fill="${color}"/>
+                </svg>
+            `;
+            const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+            return `url('${dataUrl}') ${radius} ${radius}, auto`;
+        }
+
+        // Update canvas cursor based on current brush settings
+        function updateCursor() {
+            const color = canvas.freeDrawingBrush.color === "white" ? "black" : canvas.freeDrawingBrush.color;
+            const radius = canvas.freeDrawingBrush.width / 2;
+            const $canvas = document.getElementById('canvas');
+            $canvas.style.cursor = createCircleCursor(radius, color);
         }
 
         $(document).ready(
@@ -63,6 +89,7 @@
                     imageSmoothingEnabled: false
                 });
                 canvas.freeDrawingBrush.width = 6;
+                updateCursor();
 
                 $("submit").onclick = () => {
                     const imageDataUrl = canvas.toDataURL();
@@ -79,18 +106,87 @@
             })()
         );
 
-        $("#eraser").css("opacity",".2");
+        // Size button styling
+        function updateSizeButtons() {
+            document.getElementById('size-small').style.fontSize = '10px';
+            document.getElementById('size-small').style.opacity = currentSize === 'small' ? '1' : '0.3';
+            
+            document.getElementById('size-medium').style.fontSize = '16px';
+            document.getElementById('size-medium').style.opacity = currentSize === 'medium' ? '1' : '0.3';
+            
+            document.getElementById('size-large').style.fontSize = '22px';
+            document.getElementById('size-large').style.opacity = currentSize === 'large' ? '1' : '0.3';
+        }
+
+        updateSizeButtons();
+
+        // Eraser button
+        $("#eraser").css("opacity","0.2");
         $("#eraser").click(() => {
             $("#eraser").css("opacity", "1");
             $("#pencil").css("opacity", ".2");
-            canvas.freeDrawingBrush.color = "white"
-            canvas.freeDrawingBrush.width = 20;
+            canvas.freeDrawingBrush.color = "white";
+            
+            // Apply size based on current size selection
+            if(currentSize === 'small') {
+                canvas.freeDrawingBrush.width = 10;
+            } else if(currentSize === 'medium') {
+                canvas.freeDrawingBrush.width = 20;
+            } else {
+                canvas.freeDrawingBrush.width = 40;
+            }
+            updateCursor();
         });
+
+        // Pencil button
         $("#pencil").click(() => {
             $("#pencil").css("opacity", "1");
             $("#eraser").css("opacity", ".2");
-            canvas.freeDrawingBrush.color = "black"
-            canvas.freeDrawingBrush.width = 6;
+            canvas.freeDrawingBrush.color = "black";
+            
+            // Apply size based on current size selection
+            if(currentSize === 'small') {
+                canvas.freeDrawingBrush.width = 3;
+            } else if(currentSize === 'medium') {
+                canvas.freeDrawingBrush.width = 6;
+            } else {
+                canvas.freeDrawingBrush.width = 12;
+            }
+            updateCursor();
+        });
+
+        // Size buttons
+        $("#size-small").click(() => {
+            currentSize = 'small';
+            updateSizeButtons();
+            if(canvas.freeDrawingBrush.color === "white") {
+                canvas.freeDrawingBrush.width = 10;
+            } else {
+                canvas.freeDrawingBrush.width = 3;
+            }
+            updateCursor();
+        });
+
+        $("#size-medium").click(() => {
+            currentSize = 'medium';
+            updateSizeButtons();
+            if(canvas.freeDrawingBrush.color === "white") {
+                canvas.freeDrawingBrush.width = 20;
+            } else {
+                canvas.freeDrawingBrush.width = 6;
+            }
+            updateCursor();
+        });
+
+        $("#size-large").click(() => {
+            currentSize = 'large';
+            updateSizeButtons();
+            if(canvas.freeDrawingBrush.color === "white") {
+                canvas.freeDrawingBrush.width = 40;
+            } else {
+                canvas.freeDrawingBrush.width = 12;
+            }
+            updateCursor();
         });
 
     </script>

@@ -73,3 +73,21 @@
 #eraser:hover {
     cursor: pointer;
 }
+
+.size-divider {
+    margin: 0 15px;
+    color: #ccc;
+    font-size: 1.5em;
+}
+
+.size-button {
+    margin: 0 8px;
+    font-weight: bold;
+    user-select: none;
+    transition: opacity 0.2s ease;
+}
+
+.size-button:hover {
+    cursor: pointer;
+    filter: brightness(0.8);
+}
