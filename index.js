@@ -19,13 +19,22 @@ const pool = new Pool({
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
 
+// sessionConfig configures how express-session manages user sessions.
+// Instead of storing sessions in memory (which would be lost on server restart),
+// this config uses PostgreSQL via the pgSession store to persist sessions in the database.
+// This allows users to stay logged in even after the server restarts.
 const sessionConfig = {
     store: new pgSession({
+        // Uses the PostgreSQL pool to connect to the database
         pool: pool,
+        // Sessions are stored in a table named 'session' in your PostgreSQL database
         tableName: 'session'
     }),
+    // Secret key used to sign session cookies (should be moved to environment variables for security)
     secret: 'secretdogs',
+    // Resave: false means sessions are only saved if they were modified
     resave: false,
+    // SaveUninitialized: false means unmodified sessions aren't stored in the database
     saveUninitialized: false
 }
 
@@ -189,7 +198,10 @@ app.post('/login', function(req, res) {
                         if(match) {
                             req.session.user = result.rows[0];
                             req.session.auth = "authorized";
-                            res.redirect('/home');
+                            // Save session to database before redirecting
+                            req.session.save(function(err) {
+                                res.redirect('/home');
+                            });
                         } else {
                             req.session.auth = "invalid";
                             res.render('login', { failed: true });
