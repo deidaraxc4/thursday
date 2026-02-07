@@ -68,7 +68,7 @@ const requireMod = function(req, res, next) {
 };
 
 // Flag to override allow/disallow drawing (moderators can set this later)
-let drawingEnabled = false;
+let drawingEnabled = true;
 
 // Middleware to check if it's Thursday or if drawing is explicitly enabled
 const checkThursday = function(req, res, next) {
@@ -151,7 +151,7 @@ app.get('/home', requireAuth, function(req, res) {
                 }
             });
 
-            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page, user: res.locals.user });
+            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page, user: res.locals.user, drawingOverrideEnabled: drawingEnabled});
         }
     });
 });
@@ -283,7 +283,7 @@ app.post('/vote', requireAuth, function(req, res) {
 
 });
 
-app.delete('/post', requireMod, function(req, res) {
+app.delete('/post', requireAuth, requireMod, function(req, res) {
     if(!req.body) {
         res.send("No data sent");
     }
@@ -302,6 +302,11 @@ app.delete('/post', requireMod, function(req, res) {
             res.send('success');
         }
     })
+});
+
+app.post('/admin/toggle-drawing', requireAuth, requireMod, function(req, res) {
+    drawingEnabled = !drawingEnabled;
+    res.json({ drawingEnabled: drawingEnabled });
 });
 
 

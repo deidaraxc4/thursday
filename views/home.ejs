@@ -29,6 +29,14 @@
                 <h2 id="timer"></h2>
                 <a id="submit" href="/draw">Draw a dog</a>
             </div>
+            <% if (user.moderator) { %>
+                <div class="admin-controls">
+                    <label for="drawing-toggle" class="toggle-label">Drawing: </label>
+                    <button id="drawing-toggle" class="toggle-button" data-enabled="<%= drawingOverrideEnabled %>">
+                        <%= drawingOverrideEnabled ? 'ON' : 'OFF' %>
+                    </button>
+                </div>
+            <% } %>
             <div class="logout">
                 <a id="logoutLink" href="/logout">Log Out</a>
             </div>
@@ -113,6 +121,8 @@
     </div>
 
     <script type="text/javascript">
+        const drawingEnabled = <%= drawingOverrideEnabled %>;
+        
         const getNextThursdayDate = () => {
             const d = new Date();
             d.setDate(d.getDate() + (4 + 7 - d.getDay()) % 7);
@@ -135,7 +145,7 @@
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             document.getElementById("timer").innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
-            if(distance < 0) {
+            if(distance < 0 || drawingEnabled) {
                 $("#title").text("It's Thursday!");
                 $("#timer").hide();
                 $("#submit").show();
@@ -145,6 +155,33 @@
         $("#submit").hide();
         // update time display every second
         setInterval(displayCurrentTimeUntilThursday, 1000);
+
+        // handle drawing toggle for moderators
+        $("#drawing-toggle").click(async () => {
+            const button = $("#drawing-toggle");
+            window.fetch('/admin/toggle-drawing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => response.json())
+            .then(data => {
+                drawingEnabled = data.drawingEnabled;
+                button.text(drawingEnabled ? 'ON' : 'OFF');
+                button.data('enabled', drawingEnabled);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated',
+                    text: `Drawing is now ${drawingEnabled ? 'enabled' : 'disabled'}`
+                });
+            }).catch(err => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Failed to toggle drawing'
+                });
+            });
+        });
 
         // handle upvote
         const paws = document.getElementsByClassName("paw");
