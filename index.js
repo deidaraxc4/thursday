@@ -39,6 +39,7 @@ const sessionConfig = {
 }
 
 // configure various middleware
+app.set('trust proxy', 1);
 app.use(session(sessionConfig));
 app.use(bodyParser.urlencoded({ extended: false })); // parse Content-Type: x-www-form-urlencoded
 app.use(bodyParser.json());
