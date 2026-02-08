@@ -44,6 +44,27 @@ app.use(session(sessionConfig));
 app.use(bodyParser.urlencoded({ extended: false })); // parse Content-Type: x-www-form-urlencoded
 app.use(bodyParser.json());
 
+// Middleware to prepend base path to all redirects (when behind proxy)
+const basePath = process.env.BASE_PATH || '';
+app.use(function(req, res, next) {
+    if (basePath) {
+        const originalRedirect = res.redirect;
+        res.redirect = function(status, url) {
+            // If only one argument, it's the URL
+            if (arguments.length === 1) {
+                url = status;
+                status = 302;
+            }
+            // If URL is a string, starts with /, and doesn't already have base path, add it
+            if (typeof url === 'string' && url.startsWith('/') && !url.startsWith(basePath)) {
+                url = basePath + url;
+            }
+            return originalRedirect.call(this, status, url);
+        };
+    }
+    next();
+});
+
 
 // configure where express reads CSS and JS files
 app.use(express.static(path.join(__dirname, 'public')));
