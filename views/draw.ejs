@@ -21,7 +21,7 @@
     <div class="navbar">
         <div class="nav">
             <a id="submit">Submit</a>
-            <a id="back" href="/home">Back Home</a>
+            <a id="back" href="./home">Back Home</a>
         </div>
     </div>
 
@@ -100,7 +100,7 @@
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(data)
-                    }).then(() => window.location.href = '/home');
+                    }).then(() => window.location.href = './home');
                 };
 
             })()
