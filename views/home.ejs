@@ -159,7 +159,7 @@
         // handle drawing toggle for moderators
         $("#drawing-toggle").click(async () => {
             const button = $("#drawing-toggle");
-            window.fetch('/admin/toggle-drawing', {
+            window.fetch('./admin/toggle-drawing', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -194,7 +194,7 @@
                     element.parentElement.firstElementChild.text = currentVoteValue + 1;
                     // call endpoint
                     const data = { postId: element.dataset.postid };
-                    window.fetch('/vote', {
+                    window.fetch('./vote', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -254,7 +254,7 @@
 
             if(isConfirmed) {
                 const data = { postId: postId };
-                window.fetch('/post', {
+                window.fetch('./post', {
                     method: 'DELETE',
                     headers: {
                         'Content-Type': 'application/json'

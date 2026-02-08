@@ -94,7 +94,7 @@
                 $("submit").onclick = () => {
                     const imageDataUrl = canvas.toDataURL();
                     const data = { data: imageDataUrl }
-                    window.fetch('/draw', {
+                    window.fetch('./draw', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
