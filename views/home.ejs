@@ -43,7 +43,7 @@
         </div>
     </div>
 
-    <br class="break" />
+    <div class="break"></div>
 
     <div class="controls">
         <a href="./home?sort=new">Newest </a>|
@@ -51,8 +51,6 @@
         <a href="./home?sort=best">Best Doggos </a>|
         <a href="./home?sort=bad">Bad Doggos </a>
     </div>
-
-    <br />
 
     <div class="main">
 
@@ -68,7 +66,12 @@
                             <h2 class="post-author"><%=submissions[i].username%>'s dog</h2>
                             <script>
                                 var x = "<%=submissions[i].timestamp%>"
-                                document.write('<h2 class="timestamp">'+moment(new Date(x+' UTC')).local().fromNow()+'</h2>')
+                                // Parse timestamp - handle both formats for cross-browser compatibility
+                                var momentDate = moment(x, 'YYYY-MM-DD HH:mm:ss.SSSSSS');
+                                if (!momentDate.isValid()) {
+                                    momentDate = moment(new Date(x));
+                                }
+                                document.write('<h2 class="timestamp">'+momentDate.fromNow()+'</h2>')
                             </script>
                             <div class=icons>
                                 <div class="dropdown">
