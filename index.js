@@ -150,7 +150,7 @@ app.get('/home', requireAuth, function(req, res) {
     }
 
     const query = {
-        text: `SELECT u.username, p.post_data, p.date, p.post_id, 
+        text: `SELECT u.username, p.post_data, p.date, p.post_id, p.theme,
         (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
         (SELECT CASE WHEN EXISTS (SELECT 1 AS userVoted FROM vote WHERE vote.user_id = $1 AND vote.post_id = p.post_id) THEN TRUE ELSE FALSE END AS user_voted),
         COUNT(*) OVER() AS full_count
@@ -179,7 +179,8 @@ app.get('/home', requireAuth, function(req, res) {
                     timestamp: post.date,
                     postId: post.post_id,
                     num_votes: post.num_votes,
-                    user_voted: post.user_voted
+                    user_voted: post.user_voted,
+                    theme: post.theme
                 }
             });
 

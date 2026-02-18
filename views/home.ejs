@@ -63,7 +63,7 @@
                     <div class="info-container">
                         <hr>
                         <div class="info">
-                            <h2 class="post-author"><%=submissions[i].username%>'s dog</h2>
+                            <h2 class="post-author"><%=submissions[i].username%>'s <%= submissions[i].theme ? submissions[i].theme : 'dog' %></h2>
                             <script>
                                 var x = "<%=submissions[i].timestamp%>"
                                 // Parse timestamp - handle both formats for cross-browser compatibility
