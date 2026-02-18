@@ -25,7 +25,7 @@
     <div class="navbar">
         <div class="nav">
             <div class="countdown">
-                <h1 id="title">Next Thursday</h1>
+                <h2 id="title">Next Thursday</h1>
                 <h2 id="timer"></h2>
                 <a id="submit" href="./draw">Draw a dog</a>
             </div>
@@ -125,6 +125,7 @@
 
     <script type="text/javascript">
         let drawingEnabled = <%= drawingOverrideEnabled %>;
+        const currentTheme = "<%=currentTheme%>";
         
         const getNextThursdayDate = () => {
             const d = new Date();
@@ -137,7 +138,7 @@
         const nextThursday = getNextThursdayDate();
 
         const displayCurrentTimeUntilThursday = () => {
-            $("#title").text("Next Thursday");
+            $("#title").text("Next Thursday's Theme - " + currentTheme);
 
             const now = new Date().getTime();
             const distance = nextThursday - now;
@@ -149,7 +150,7 @@
 
             document.getElementById("timer").innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
             if(distance < 0 || drawingEnabled) {
-                $("#title").text("It's Thursday!");
+                $("#title").text("It's Thursday! - Theme: " + currentTheme);
                 $("#timer").hide();
                 $("#submit").show();
             }

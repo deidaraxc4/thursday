@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS post (
     date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	report_count integer DEFAULT 0,
 	hidden boolean DEFAULT false,
+	theme varchar(50),
 	FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 

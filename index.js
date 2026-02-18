@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const moment = require('moment');
 
 const config = require('./config')();
+const themesConfig = require('./config/themes.json');
 const { Pool } = require('pg');
 const pool = new Pool({
     user: config.user,
@@ -104,6 +105,15 @@ const checkThursday = function(req, res, next) {
     }
 };
 
+// Function to get the current week's theme
+const getCurrentTheme = () => {
+    const now = moment();
+    const weekNumber = now.week(); // moment.js week() returns week number (1-53)
+    const themes = themesConfig.themes;
+    const themeIndex = (weekNumber - 1) % themes.length;
+    return themes[themeIndex];
+};
+
 
 // routes
 app.get(['/', '/login'], function (req, res) {
@@ -173,7 +183,7 @@ app.get('/home', requireAuth, function(req, res) {
                 }
             });
 
-            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page, user: res.locals.user, drawingOverrideEnabled: drawingEnabled});
+            res.render('home', { submissions: submissions, totalItems: totalItems, currentPage: page, user: res.locals.user, drawingOverrideEnabled: drawingEnabled, currentTheme: getCurrentTheme()});
         }
     });
 });
