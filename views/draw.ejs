@@ -57,6 +57,9 @@
             height = 512;
         }
 
+        const currentTheme = "<%=currentTheme%>";
+        console.log("Current theme:", currentTheme);
+
         // Function to create a circle cursor based on brush width and color
         function createCircleCursor(radius, color) {
             const svg = `
@@ -93,7 +96,7 @@
 
                 $("submit").onclick = () => {
                     const imageDataUrl = canvas.toDataURL();
-                    const data = { data: imageDataUrl }
+                    const data = { data: imageDataUrl, theme: currentTheme };
                     window.fetch('./draw', {
                         method: 'POST',
                         headers: {

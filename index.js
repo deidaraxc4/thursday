@@ -121,7 +121,7 @@ app.get(['/', '/login'], function (req, res) {
 });
 
 app.get('/draw', requireAuth, checkThursday, function(req, res) {
-    res.render('draw');
+    res.render('draw', { currentTheme: getCurrentTheme() });
 });
 
 app.get('/home', requireAuth, function(req, res) {
@@ -278,8 +278,8 @@ app.post('/draw', requireAuth, checkThursday, function(req, res) {
     }
 
     const query = {
-        text: 'INSERT INTO post(user_id, post_data) VALUES($1, $2)',
-        values: [res.locals.user.user_id, req.body['data']]
+        text: 'INSERT INTO post(user_id, post_data, theme) VALUES($1, $2, $3)',
+        values: [res.locals.user.user_id, req.body['data'], req.body['theme']]
     };
     pool.query(query, function(err, response) {
         if(err) {
