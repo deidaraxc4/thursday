@@ -39,6 +39,21 @@
             <span id="size-small" class="size-button" title="Small">●</span>
             <span id="size-medium" class="size-button" title="Medium">●</span>
             <span id="size-large" class="size-button" title="Large">●</span>
+            <span class="size-divider">|</span>
+            <div class="color-picker">
+                <div class="color-grid">
+                    <span class="color-dot" data-color="#000000" title="Black" style="background-color: #000000;"></span>
+                    <span class="color-dot" data-color="#E63946" title="Red" style="background-color: #E63946;"></span>
+                    <span class="color-dot" data-color="#F77F00" title="Orange" style="background-color: #F77F00;"></span>
+                    <span class="color-dot" data-color="#FCBF49" title="Yellow" style="background-color: #FCBF49;"></span>
+                    <span class="color-dot" data-color="#06A77D" title="Green" style="background-color: #06A77D;"></span>
+                    <span class="color-dot" data-color="#118AB2" title="Blue" style="background-color: #118AB2;"></span>
+                    <span class="color-dot" data-color="#073B4C" title="Dark Blue" style="background-color: #073B4C;"></span>
+                    <span class="color-dot" data-color="#8338EC" title="Purple" style="background-color: #8338EC;"></span>
+                    <span class="color-dot" data-color="#FF006E" title="Pink" style="background-color: #FF006E;"></span>
+                    <span class="color-dot" data-color="#A0AEC0" title="Gray" style="background-color: #A0AEC0;"></span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -48,6 +63,8 @@
         var width = $(document).width();
         var height = $(document).height();
         var currentSize = "medium"; // track current size
+        var currentColor = "#000000"; // track current color
+        var isEraserMode = false; // track if in eraser mode
         
         // bootleg mobile responsiveness
         if(width <= 479) {
@@ -74,7 +91,7 @@
 
         // Update canvas cursor based on current brush settings
         function updateCursor() {
-            const color = canvas.freeDrawingBrush.color === "white" ? "black" : canvas.freeDrawingBrush.color;
+            const color = isEraserMode ? "black" : currentColor;
             const radius = canvas.freeDrawingBrush.width / 2;
             const $canvas = document.getElementById('canvas');
             $canvas.style.cursor = createCircleCursor(radius, color);
@@ -92,6 +109,7 @@
                     imageSmoothingEnabled: false
                 });
                 canvas.freeDrawingBrush.width = 6;
+                canvas.freeDrawingBrush.color = currentColor;
                 updateCursor();
 
                 $("submit").onclick = () => {
@@ -121,75 +139,114 @@
             document.getElementById('size-large').style.opacity = currentSize === 'large' ? '1' : '0.3';
         }
 
+        // Color picker button styling
+        function updateColorDots() {
+            document.querySelectorAll('.color-dot').forEach(dot => {
+                if (dot.getAttribute('data-color') === currentColor && !isEraserMode) {
+                    dot.classList.add('selected');
+                } else {
+                    dot.classList.remove('selected');
+                }
+            });
+        }
+
         updateSizeButtons();
+        updateColorDots();
 
         // Eraser button
         $("#eraser").css("opacity","0.2");
         $("#eraser").click(() => {
-            $("#eraser").css("opacity", "1");
-            $("#pencil").css("opacity", ".2");
-            canvas.freeDrawingBrush.color = "white";
+            isEraserMode = !isEraserMode;
+            
+            if (isEraserMode) {
+                $("#eraser").css("opacity", "1");
+                $("#pencil").css("opacity", ".2");
+                canvas.freeDrawingBrush.color = "white";
+            } else {
+                $("#eraser").css("opacity", ".2");
+                $("#pencil").css("opacity", "1");
+                canvas.freeDrawingBrush.color = currentColor;
+            }
             
             // Apply size based on current size selection
-            if(currentSize === 'small') {
-                canvas.freeDrawingBrush.width = 10;
-            } else if(currentSize === 'medium') {
-                canvas.freeDrawingBrush.width = 20;
-            } else {
-                canvas.freeDrawingBrush.width = 40;
-            }
+            applyCurrentSize();
             updateCursor();
+            updateColorDots();
         });
 
         // Pencil button
         $("#pencil").click(() => {
+            isEraserMode = false;
             $("#pencil").css("opacity", "1");
             $("#eraser").css("opacity", ".2");
-            canvas.freeDrawingBrush.color = "black";
+            canvas.freeDrawingBrush.color = currentColor;
             
             // Apply size based on current size selection
-            if(currentSize === 'small') {
-                canvas.freeDrawingBrush.width = 3;
-            } else if(currentSize === 'medium') {
-                canvas.freeDrawingBrush.width = 6;
-            } else {
-                canvas.freeDrawingBrush.width = 12;
-            }
+            applyCurrentSize();
             updateCursor();
+            updateColorDots();
         });
+
+        // Helper function to apply current size
+        function applyCurrentSize() {
+            if (isEraserMode) {
+                if(currentSize === 'small') {
+                    canvas.freeDrawingBrush.width = 10;
+                } else if(currentSize === 'medium') {
+                    canvas.freeDrawingBrush.width = 20;
+                } else {
+                    canvas.freeDrawingBrush.width = 40;
+                }
+            } else {
+                if(currentSize === 'small') {
+                    canvas.freeDrawingBrush.width = 3;
+                } else if(currentSize === 'medium') {
+                    canvas.freeDrawingBrush.width = 6;
+                } else {
+                    canvas.freeDrawingBrush.width = 12;
+                }
+            }
+        }
 
         // Size buttons
         $("#size-small").click(() => {
             currentSize = 'small';
             updateSizeButtons();
-            if(canvas.freeDrawingBrush.color === "white") {
-                canvas.freeDrawingBrush.width = 10;
-            } else {
-                canvas.freeDrawingBrush.width = 3;
-            }
+            applyCurrentSize();
             updateCursor();
         });
 
         $("#size-medium").click(() => {
             currentSize = 'medium';
             updateSizeButtons();
-            if(canvas.freeDrawingBrush.color === "white") {
-                canvas.freeDrawingBrush.width = 20;
-            } else {
-                canvas.freeDrawingBrush.width = 6;
-            }
+            applyCurrentSize();
             updateCursor();
         });
 
         $("#size-large").click(() => {
             currentSize = 'large';
             updateSizeButtons();
-            if(canvas.freeDrawingBrush.color === "white") {
-                canvas.freeDrawingBrush.width = 40;
-            } else {
-                canvas.freeDrawingBrush.width = 12;
-            }
+            applyCurrentSize();
             updateCursor();
+        });
+
+        // Color picker dots
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                currentColor = dot.getAttribute('data-color');
+                
+                // Switch to pencil mode (not eraser) when picking a color
+                if (isEraserMode) {
+                    isEraserMode = false;
+                    $("#pencil").css("opacity", "1");
+                    $("#eraser").css("opacity", ".2");
+                }
+                
+                canvas.freeDrawingBrush.color = currentColor;
+                applyCurrentSize();
+                updateCursor();
+                updateColorDots();
+            });
         });
 
     </script>
