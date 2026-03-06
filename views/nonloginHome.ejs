@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Draw dogs on Thursdays">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://ec2-3-85-41-179.compute-1.amazonaws.com/">
+    <meta property="og:image" content="thursday_logo.svg" />
+    <title>Draw Dog Thursday</title>
+    <link rel="icon" type="image/png" href="thursday_logo.svg"/>
+    <!-- add our CSS -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/home.css" />
+    <!-- add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- add JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- add MomentJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+    <!-- add sweet alert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav">
+            <div class="countdown">
+                <h2 id="title">Next Thursday</h1>
+                <h2 id="timer"></h2>
+            </div>
+            <div class="login">
+                <a id="loginLink" href="./login">Log In</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="break"></div>
+
+    <div class="controls">
+        <a href="./nonloginHome?sort=new">Newest </a>|
+        <a href="./nonloginHome?sort=old">Oldest </a>|
+        <a href="./nonloginHome?sort=best">Best Doggos </a>|
+        <a href="./nonloginHome?sort=bad">Bad Doggos </a>
+    </div>
+
+    <div class="main">
+
+        <% for (var i = 0; i < submissions.length; i++) { %>
+            <div class="row">
+                <div class="card">
+                    <div class="image-container">
+                        <img src="<%=submissions[i].dataUrl%>">
+                    </div>
+                    <div class="info-container">
+                        <hr>
+                        <div class="info">
+                            <h2 class="post-author"><%=submissions[i].username%>'s <%= submissions[i].theme ? submissions[i].theme : 'dog' %></h2>
+                            <script>
+                                var x = "<%=submissions[i].timestamp%>"
+                                // Parse timestamp - handle both formats for cross-browser compatibility
+                                var momentDate = moment(x, 'YYYY-MM-DD HH:mm:ss.SSSSSS');
+                                if (!momentDate.isValid()) {
+                                    momentDate = moment(new Date(x));
+                                }
+                                document.write('<h2 class="timestamp">'+momentDate.fromNow()+'</h2>')
+                            </script>
+                            <div class=icons>
+                                <div class="vote-container">
+                                    <a class=vote-counter><%=submissions[i].num_votes%></a>
+                                    <a>&nbsp;</a>
+                                    <img class="paw" src="assets/paw.svg">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <%} %>
+
+    </div>
+    
+    <br />
+
+    <div class="pagination">
+        <script>const currentPage = <%=currentPage%>;</script>
+        <% if(currentPage == 1) {%>
+            <input disabled type="button" id="previous" onclick="previousPage()" value="prev" />
+        <% } else { %>
+            <input type="button" id="previous" onclick="previousPage()" value="prev" />
+        <% } %>
+        
+        <% if(currentPage >= (totalItems/5)) {%>
+            <input disabled type="button" id="next" onclick="nextPage()" value="next" />
+        <% } else { %>
+            <input type="button" id="next" onclick="nextPage()" value="next" />
+        <% } %>
+
+    </div>
+
+    <script type="text/javascript">
+        const currentTheme = "<%=currentTheme%>";
+        
+        const getNextThursdayDate = () => {
+            const d = new Date();
+            d.setDate(d.getDate() + (4 + 7 - d.getDay()) % 7);
+            d.setHours(0);
+            d.setMinutes(0);
+            d.setSeconds(0);
+            return d;
+        };
+        const nextThursday = getNextThursdayDate();
+
+        const displayCurrentTimeUntilThursday = () => {
+            $("#title").text("Next Thursday's Theme - " + currentTheme);
+
+            const now = new Date().getTime();
+            const distance = nextThursday - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("timer").innerHTML = days + "d " + hours + "h "+ minutes + "m " + seconds + "s ";
+        };
+
+        // update time display every second
+        setInterval(displayCurrentTimeUntilThursday, 1000);
+    </script>
+
+    <script>
+        const nextPage = () => {
+            const baseUrl = window.location.origin;
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortParam = urlParams.get('sort');
+            const sortQuery = sortParam ? '&sort=' + sortParam : '';
+            const nextPage = currentPage + 1;
+            window.location = baseUrl + '/nonloginHome' + '?page=' + nextPage + sortQuery;
+        };
+
+        const previousPage = () => {
+            const baseUrl = window.location.origin;
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortParam = urlParams.get('sort');
+            const sortQuery = sortParam ? '&sort=' + sortParam : '';
+            const prevPage = currentPage - 1;
+            window.location = baseUrl + '/nonloginHome' + '?page=' + prevPage + sortQuery;
+        };
+    </script>
+
+</body>
+
+</html>

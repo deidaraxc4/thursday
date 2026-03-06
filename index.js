@@ -116,7 +116,71 @@ const getCurrentTheme = () => {
 
 
 // routes
-app.get(['/', '/login'], function (req, res) {
+// app.get('/', function(req, res) {
+//     res.render('nonloginHome', { currentTheme: getCurrentTheme() });
+// });
+app.get(['/', '/nonloginHome'], function(req, res) {
+    const sort = req.query.sort;
+    let page = parseInt(req.query.page) || 1;
+    if(page < 1) {
+        page = 1;
+    }
+    const offset = (page - 1) * 5;
+    let orderQuery = "ORDER BY p.date DESC";
+    switch (sort) {
+        case "new" :
+            orderQuery = "ORDER BY p.date DESC";
+            break;
+        case "old" :
+            orderQuery = "ORDER BY p.date ASC";
+            break;
+        case "best" :
+            orderQuery = "ORDER BY num_votes DESC";
+            break;
+        case "bad" :
+            orderQuery = "ORDER BY num_votes ASC";
+            break;
+        default:
+            orderQuery = "ORDER BY p.date DESC";
+    }
+
+    const query = {
+        text: `SELECT u.username, p.post_data, p.date, p.post_id, p.theme,
+        (SELECT COALESCE(SUM(vote_value), 0) FROM vote v WHERE v.post_id = p.post_id) num_votes,
+        COUNT(*) OVER() AS full_count
+        FROM users u INNER JOIN post p ON p.user_id = u.user_id ${orderQuery} LIMIT 5 OFFSET $1`,
+        values: [offset]
+    };
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            res.send("something went wrong")
+        } else {
+            const posts = response.rows;
+            let totalItems;
+            try {
+                totalItems = response.rows[0].full_count
+            } catch(e) {
+                totalItems = 0
+            }
+            const submissions = posts.map((post) => {
+                const buffer = Buffer.from(post.post_data);
+                return {
+                    username: post.username,
+                    dataUrl: buffer.toString('utf8'),
+                    timestamp: post.date,
+                    postId: post.post_id,
+                    num_votes: post.num_votes,
+                    theme: post.theme
+                }
+            });
+
+            res.render('nonloginHome', { submissions: submissions, totalItems: totalItems, currentPage: page, currentTheme: getCurrentTheme()});
+        }
+    });
+});
+
+app.get(['/login'], function (req, res) {
     res.render('login', { failed: false });
 });
 
