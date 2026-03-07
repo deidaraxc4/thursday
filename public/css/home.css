@@ -9,7 +9,7 @@
     margin-top: 100px;
 }
 
-.logout {
+.logout, .login {
     float: left;
     font-weight: 400;
     font-size: 1em;
@@ -30,7 +30,7 @@
     border: none;
     padding: 15px 20px;
     border-radius: 25px;
-    width: 50%;
+    width: 100%;
     color: white;
     font-weight: bold;
     font-size: 1em;
