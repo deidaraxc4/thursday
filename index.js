@@ -207,13 +207,13 @@ app.get('/leaderboard', function(req, res) {
 
     const query = {
         text: `SELECT u.username,
-        COUNT(p.post_id) as post_count,
+        COUNT(DISTINCT p.post_id) as post_count,
         COALESCE(SUM(v.vote_value), 0) as total_upvotes
         FROM users u
         LEFT JOIN post p ON u.user_id = p.user_id
         LEFT JOIN vote v ON p.post_id = v.post_id
         GROUP BY u.user_id, u.username
-        HAVING COUNT(p.post_id) > 0
+        HAVING COUNT(DISTINCT p.post_id) > 0
         ${orderQuery}`,
         values: []
     };
