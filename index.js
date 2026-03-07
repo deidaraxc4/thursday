@@ -116,9 +116,6 @@ const getCurrentTheme = () => {
 
 
 // routes
-// app.get('/', function(req, res) {
-//     res.render('nonloginHome', { currentTheme: getCurrentTheme() });
-// });
 app.get(['/', '/nonloginHome'], function(req, res) {
     const sort = req.query.sort;
     let page = parseInt(req.query.page) || 1;
