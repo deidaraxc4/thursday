@@ -185,6 +185,38 @@ app.get('/draw', requireAuth, checkThursday, function(req, res) {
     res.render('draw', { currentTheme: getCurrentTheme() });
 });
 
+app.get('/leaderboard', function(req, res) {
+    const sort = req.query.sort;
+    let orderQuery = "ORDER BY total_upvotes DESC"; // default: sort by karma (upvotes)
+    
+    if(sort === "posts") {
+        orderQuery = "ORDER BY post_count DESC";
+    }
+
+    const query = {
+        text: `SELECT u.username,
+        COUNT(p.post_id) as post_count,
+        COALESCE(SUM(v.vote_value), 0) as total_upvotes
+        FROM users u
+        LEFT JOIN post p ON u.user_id = p.user_id
+        LEFT JOIN vote v ON p.post_id = v.post_id
+        GROUP BY u.user_id, u.username
+        HAVING COUNT(p.post_id) > 0
+        ${orderQuery}`,
+        values: []
+    };
+    
+    pool.query(query, function(err, response) {
+        if(err) {
+            console.log(err);
+            res.send("something went wrong");
+        } else {
+            const leaderboardData = response.rows;
+            res.render('leaderboard', { leaderboardData: leaderboardData, sort: sort || 'karma' });
+        }
+    });
+});
+
 app.get('/home', requireAuth, function(req, res) {
     const sort = req.query.sort;
     let page = parseInt(req.query.page) || 1;

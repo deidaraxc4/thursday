@@ -1,0 +1,94 @@
+.leaderboard-container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.sort-controls {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.sort-button {
+    padding: 10px 20px;
+    border: 2px solid #333;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'Open Sans', sans-serif;
+    transition: all 0.3s ease;
+}
+
+.sort-button.active {
+    background-color: #333;
+    color: white;
+    font-weight: bold;
+}
+
+.sort-button:hover {
+    background-color: #ddd;
+}
+
+.sort-button.active:hover {
+    background-color: #333;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Open Sans', sans-serif;
+}
+
+thead {
+    background-color: #f0f0f0;
+    border-bottom: 2px solid #333;
+}
+
+th {
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: bold;
+    color: #333;
+}
+
+td {
+    padding: 12px 15px;
+    border: none;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #e8e8e8;
+}
+
+tbody tr:hover {
+    background-color: #d8d8d8;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+}
+
+#back {
+    float: left;
+    margin-left: 1vw;
+    margin-top: 3vh;
+    position: absolute;
+    font-size: 1em;
+    font-weight: bold;
+    text-decoration: none;
+    color: black;
+}
+
+#back:hover {
+    cursor: pointer;
+}

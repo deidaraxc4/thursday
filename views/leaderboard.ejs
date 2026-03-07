@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:title" content="Draw dogs on Thursdays">
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://ec2-3-85-41-179.compute-1.amazonaws.com/">
+    <meta property="og:image" content="thursday_logo.svg" />
+    <title>Leaderboard - Draw Dog Thursday</title>
+    <link rel="icon" type="image/png" href="thursday_logo.svg"/>
+    <!-- add our CSS -->
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/leaderboard.css" />
+    <!-- add Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+    <!-- add JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="nav">
+            <a id="back" href="./home">Back Home</a>
+        </div>
+    </div>
+
+    <div class="leaderboard-container">
+        <h1>Leaderboard</h1>
+
+        <div class="sort-controls">
+            <button class="sort-button <%= sort === 'karma' || !sort ? 'active' : '' %>" onclick="window.location.href='?sort=karma'">
+                Sort by Karma
+            </button>
+            <button class="sort-button <%= sort === 'posts' ? 'active' : '' %>" onclick="window.location.href='?sort=posts'">
+                Sort by Most Posts
+            </button>
+        </div>
+
+        <% if (leaderboardData.length === 0) { %>
+            <div class="empty-state">
+                No submissions yet. Come back later!
+            </div>
+        <% } else { %>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Upvotes</th>
+                        <th># Posts</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% leaderboardData.forEach(function(row) { %>
+                        <tr>
+                            <td><%= row.username %></td>
+                            <td><%= row.total_upvotes %></td>
+                            <td><%= row.post_count %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        <% } %>
+    </div>
+</body>
+
+</html>

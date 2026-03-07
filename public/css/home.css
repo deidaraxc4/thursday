@@ -200,3 +200,7 @@ img {
     background-color: #459ed1;
     color: white;
 }
+
+.controls {
+    margin-bottom: 10px;
+}
