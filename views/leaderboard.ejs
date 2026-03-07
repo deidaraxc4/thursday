@@ -50,9 +50,18 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% leaderboardData.forEach(function(row) { %>
+                    <% leaderboardData.forEach(function(row, index) { %>
                         <tr>
-                            <td><%= row.username %></td>
+                            <td>
+                                <% if (index === 0) { %>
+                                    🥇
+                                <% } else if (index === 1) { %>
+                                    🥈
+                                <% } else if (index === 2) { %>
+                                    🥉
+                                <% } %>
+                                <%= row.username %>
+                            </td>
                             <td><%= row.total_upvotes %></td>
                             <td><%= row.post_count %></td>
                         </tr>
