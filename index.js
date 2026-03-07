@@ -36,7 +36,13 @@ const sessionConfig = {
     // Resave: false means sessions are only saved if they were modified
     resave: false,
     // SaveUninitialized: false means unmodified sessions aren't stored in the database
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',  // Only send cookie over HTTPS in production
+        httpOnly: true,  // Prevent JavaScript from accessing the cookie (security)
+        sameSite: 'lax',  // CSRF protection
+        maxAge: 1000 * 60 * 60 * 24 * 7  // Session expires after 1 week
+    }
 }
 
 // configure various middleware
