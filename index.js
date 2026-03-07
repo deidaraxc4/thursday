@@ -117,6 +117,12 @@ const getCurrentTheme = () => {
 
 // routes
 app.get(['/', '/nonloginHome'], function(req, res) {
+    // If user has a valid session, redirect to the logged-in home page
+    if(req.session && req.session.auth === "authorized") {
+        res.redirect('/home');
+        return;
+    }
+
     const sort = req.query.sort;
     let page = parseInt(req.query.page) || 1;
     if(page < 1) {
