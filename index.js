@@ -38,6 +38,7 @@ const sessionConfig = {
     // SaveUninitialized: false means unmodified sessions aren't stored in the database
     saveUninitialized: false,
     cookie: {
+        path: process.env.BASE_PATH || '/',  // Set cookie path to match subpath
         secure: process.env.NODE_ENV === 'production',  // Only send cookie over HTTPS in production
         httpOnly: true,  // Prevent JavaScript from accessing the cookie (security)
         sameSite: 'lax',  // CSRF protection
