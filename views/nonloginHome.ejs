@@ -36,10 +36,10 @@
     <a id="leaderboard" href="./leaderboard">Leaderboard</a>
 
     <div class="controls">
-        <a href="./nonloginHome?sort=new">Newest </a>|
-        <a href="./nonloginHome?sort=old">Oldest </a>|
-        <a href="./nonloginHome?sort=best">Best Doggos </a>|
-        <a href="./nonloginHome?sort=bad">Bad Doggos </a>
+        <a href="?sort=new">Newest </a>|
+        <a href="?sort=old">Oldest </a>|
+        <a href="?sort=best">Best Doggos </a>|
+        <a href="?sort=bad">Bad Doggos </a>
     </div>
 
     <div class="main">
@@ -134,20 +134,22 @@
     <script>
         const nextPage = () => {
             const baseUrl = window.location.origin;
+            const path = window.location.pathname;
             const urlParams = new URLSearchParams(window.location.search);
             const sortParam = urlParams.get('sort');
             const sortQuery = sortParam ? '&sort=' + sortParam : '';
             const nextPage = currentPage + 1;
-            window.location = baseUrl + '/nonloginHome' + '?page=' + nextPage + sortQuery;
+            window.location = baseUrl + path + '?page=' + nextPage + sortQuery;
         };
 
         const previousPage = () => {
             const baseUrl = window.location.origin;
+            const path = window.location.pathname;
             const urlParams = new URLSearchParams(window.location.search);
             const sortParam = urlParams.get('sort');
             const sortQuery = sortParam ? '&sort=' + sortParam : '';
             const prevPage = currentPage - 1;
-            window.location = baseUrl + '/nonloginHome' + '?page=' + prevPage + sortQuery;
+            window.location = baseUrl + path + '?page=' + prevPage + sortQuery;
         };
     </script>
 
