@@ -38,7 +38,6 @@ const sessionConfig = {
     // SaveUninitialized: false means unmodified sessions aren't stored in the database
     saveUninitialized: false,
     cookie: {
-        path: process.env.BASE_PATH || '/',  // Set cookie path to match subpath
         secure: process.env.NODE_ENV === 'production',  // Only send cookie over HTTPS in production
         httpOnly: true,  // Prevent JavaScript from accessing the cookie (security)
         sameSite: 'lax',  // CSRF protection
@@ -54,15 +53,6 @@ sessionConfig.store.on('error', (err) => {
 // configure various middleware
 app.set('trust proxy', 1);
 app.use(session(sessionConfig));
-
-// Debug middleware to check if session is initializing
-app.use((req, res, next) => {
-    console.log('Session middleware result - req.session exists:', !!req.session);
-    if (!req.session) {
-        console.log('ERROR: req.session is undefined! Session store may have failed to initialize.');
-    }
-    next();
-});
 
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' })); // parse Content-Type: x-www-form-urlencoded
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -368,10 +358,6 @@ app.post('/login', function(req, res) {
                             return;
                         }
                         if(match) {
-                            console.log("here match");
-                            console.log(req);
-                            console.log(req.session);
-                            console.log("here match2");
                             req.session.user = result.rows[0];
                             req.session.auth = "authorized";
                             // Save session to database before redirecting
