@@ -46,9 +46,24 @@ const sessionConfig = {
     }
 }
 
+// Add listener for session store errors
+sessionConfig.store.on('error', (err) => {
+    console.error('Session store error:', err);
+});
+
 // configure various middleware
 app.set('trust proxy', 1);
 app.use(session(sessionConfig));
+
+// Debug middleware to check if session is initializing
+app.use((req, res, next) => {
+    console.log('Session middleware result - req.session exists:', !!req.session);
+    if (!req.session) {
+        console.log('ERROR: req.session is undefined! Session store may have failed to initialize.');
+    }
+    next();
+});
+
 app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' })); // parse Content-Type: x-www-form-urlencoded
 app.use(bodyParser.json({ limit: '50mb' }));
 
@@ -353,6 +368,10 @@ app.post('/login', function(req, res) {
                             return;
                         }
                         if(match) {
+                            console.log("here match");
+                            console.log(req);
+                            console.log(req.session);
+                            console.log("here match2");
                             req.session.user = result.rows[0];
                             req.session.auth = "authorized";
                             // Save session to database before redirecting
