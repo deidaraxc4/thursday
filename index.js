@@ -339,21 +339,29 @@ app.post('/login', function(req, res) {
         };
         pool.query(query, function(err, result) {
             if(err) {
-                console.log(err);
-                // throw err;
+                console.log('DB error:', err);
                 res.send("something went wrong")
             } else {
-                //console.log(result.rows[0])
                 if(result.rows.length < 1) {
                     req.session.auth = "invalid";
                     res.render('login', { failed: true });
                 } else {
                     bcrypt.compare(req.body.password, result.rows[0].user_password, function(err, match) {
+                        if(err) {
+                            console.log('Bcrypt error:', err);
+                            res.send("something went wrong");
+                            return;
+                        }
                         if(match) {
                             req.session.user = result.rows[0];
                             req.session.auth = "authorized";
                             // Save session to database before redirecting
                             req.session.save(function(err) {
+                                if(err) {
+                                    console.log('Session save error:', err);
+                                    res.send("something went wrong");
+                                    return;
+                                }
                                 res.redirect('/home');
                             });
                         } else {
